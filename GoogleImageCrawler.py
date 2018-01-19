@@ -7,14 +7,42 @@ Created on Sun Dec 25 2016
 Modified in Fri Jan 19 2018
 @author: clement10601
 """
+import threading
+import socket
+import urllib
+import os
+import json
 
 from selenium import webdriver
-from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+from selenium.webdriver.common.keys import Keys
 import threading
 import socket
 import urllib
 import os
 
+'''
+CONF
+'''
+url_saveDIR = 'gic/urls'
+img_saveDIR = 'gic/images'
+base_url = 'https://www.google.com/search?aq=f&tbm=isch&q={0}'
+def check_dir ():
+    if(os.path.exists(url_saveDIR) == False):
+        os.makedirs(url_saveDIR)
+    if(os.path.exists(img_saveDIR) == False):
+        os.makedirs(img_saveDIR)
+
+def test ():
+    driver = webdriver.Firefox()
+    driver.get("http://www.python.org")
+    assert "Python" in driver.title
+    elem = driver.find_element_by_name("q")
+    elem.clear()
+    elem.send_keys("pycon")
+    elem.send_keys(Keys.RETURN)
+    assert "No results found." not in driver.page_source
+    driver.close()
+  
 '''
 Func@getIMGurlsGoogle:
 	输入一组搜索关键词，函数爬取相关的图片url并保存到指定目录下以关键词命名的文件夹中
@@ -25,23 +53,19 @@ Func@getIMGurlsGoogle:
 		saveDIR：string，图片url保存目录
 		items_per_round：int，每次重启浏览器，搜索的关键词数量
 '''
-
-def getIMGurlsGoogle(search_items,num,bottom,saveDIR,items_per_round):
-    if(os.path.exists(saveDIR) == False):
-        os.makedirs(saveDIR)
-    driver = webdriver.Firefox()
-    driver.maximize_window()
+def getIMGurlsGoogle(search_items, num,bottom, saveDIR, items_per_round):
+    driver = webdriver.PhantomJS()
     threshold = items_per_round - 1
     item_cnt = 0
     for search_item in search_items:
         if(item_cnt%items_per_round == threshold):
             driver.quit()
-            driver = webdriver.Firefox()
-            driver.maximize_window()
+            driver = webdriver.PhantomJS()
+
         print('#%d: %s' % (item_cnt, search_item))
         search_item = search_item.split(' ')
         search_item = '+'.join(search_item)
-        search_url = 'https://www.google.com/search?aq=f&tbm=isch&q=%s' % search_item
+        search_url = base_url.format(search_item)
         img_url_set = set()
         driver.get(search_url)
         pos = 0
@@ -85,8 +109,6 @@ Func@getIMG:
 '''
 
 def getIMG(fns,readDIR,saveDIR):
-    if(os.path.exists(saveDIR) == False):
-        os.makedirs(saveDIR)
     for fn in fns:
         name = fn[:-4]
         if(os.path.exists(saveDIR + '/' + name) == False):
@@ -136,9 +158,13 @@ def getIMG_mt(num_t,readDIR,saveDIR):
         threads[i].join()
 
 if __name__ == '__main__':
+    check_dir()
+    test()
     # example:
+    '''
     url_saveDIR = 'gic/urls'
     img_saveDIR = 'gic/images'
     search_items = ['Scarlett Johansson', 'Benedict Cumberbatch']
     getIMGurlsGoogle(search_items = search_items, num = 100,bottom = 10000,saveDIR = url_saveDIR,items_per_round = 10)
     getIMG_mt(num_t = 2,readDIR = url_saveDIR,saveDIR = img_saveDIR)
+    '''

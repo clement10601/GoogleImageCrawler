@@ -15,6 +15,7 @@ import json
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 import threading
 import socket
 import urllib
@@ -33,15 +34,16 @@ def check_dir ():
         os.makedirs(img_saveDIR)
 
 def test ():
-    driver = webdriver.Firefox()
-    driver.get("http://www.python.org")
-    assert "Python" in driver.title
-    elem = driver.find_element_by_name("q")
+    binary = FirefoxBinary('geckodriver')
+    browser = webdriver.Firefox(firefox_binary=binary)
+    browser.get("http://www.python.org")
+    assert "Python" in browser.title
+    elem = browser.find_element_by_name("q")
     elem.clear()
     elem.send_keys("pycon")
     elem.send_keys(Keys.RETURN)
-    assert "No results found." not in driver.page_source
-    driver.close()
+    assert "No results found." not in browser.page_source
+    browser.close()
   
 '''
 Func@getIMGurlsGoogle:

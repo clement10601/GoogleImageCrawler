@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-Platform: windows 10
-Running environment: Python 2.7
+Platform: archlinux
+Running environment: Python 3.6
 
 Created on Sun Dec 25 2016
-@author: luckycallor(www.luckycallor.com)
+Modified in Fri Jan 19 2018
+@author: clement10601
 """
 
 from selenium import webdriver
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 import threading
 import socket
 import urllib
@@ -26,7 +28,7 @@ Func@getIMGurlsGoogle:
 
 def getIMGurlsGoogle(search_items,num,bottom,saveDIR,items_per_round):
     if(os.path.exists(saveDIR) == False):
-        os.mkdir(saveDIR)
+        os.makedirs(saveDIR)
     driver = webdriver.Firefox()
     driver.maximize_window()
     threshold = items_per_round - 1
@@ -36,7 +38,7 @@ def getIMGurlsGoogle(search_items,num,bottom,saveDIR,items_per_round):
             driver.quit()
             driver = webdriver.Firefox()
             driver.maximize_window()
-        print '#%d: %s' % (item_cnt, search_item)
+        print('#%d: %s' % (item_cnt, search_item))
         search_item = search_item.split(' ')
         search_item = '+'.join(search_item)
         search_url = 'https://www.google.com/search?aq=f&tbm=isch&q=%s' % search_item
@@ -50,7 +52,7 @@ def getIMGurlsGoogle(search_items,num,bottom,saveDIR,items_per_round):
                 break
             js = "document.documentElement.scrollTop=%d" % pos
             driver.execute_script(js)
-            for element in driver.find_elements_by_tag_name('a'):  
+            for element in driver.find_elements_by_tag_name('a'):
                 href_ori = element.get_attribute('href')
                 if(href_ori == None):
                     continue
@@ -65,7 +67,7 @@ def getIMGurlsGoogle(search_items,num,bottom,saveDIR,items_per_round):
                     if(cnt >= num):
                         break
             pos += 600
-        f = open(saveDIR + '\\' + search_items[item_cnt] + '.txt', 'w')
+        f = open(saveDIR + '/' + search_items[item_cnt] + '.txt', 'w')
         for u in ans:
             f.write(u)
             f.write('\n')
@@ -84,21 +86,21 @@ Func@getIMG:
 
 def getIMG(fns,readDIR,saveDIR):
     if(os.path.exists(saveDIR) == False):
-        os.mkdir(saveDIR)
+        os.makedirs(saveDIR)
     for fn in fns:
         name = fn[:-4]
-        if(os.path.exists(saveDIR + '\\' + name) == False):
-            os.mkdir(saveDIR + '\\' + name)
-        furl = open(readDIR + '\\' + fn)
+        if(os.path.exists(saveDIR + '/' + name) == False):
+            os.makedirs(saveDIR + '/' + name)
+        furl = open(readDIR + '/' + fn)
         count = 0
         for url in furl.readlines():
             count += 1
             socket.setdefaulttimeout(120)
             try:
-                urllib.urlretrieve(url, saveDIR + '\\' + name + '\\%d.jpg' % count)
+                urllib.urlretrieve(url, saveDIR + '/' + name + '/%d.jpg' % count)
             except:
                 continue
-            print 'Downloading: %s ---- #%d' % (name,count)
+            print('Downloading: %s ---- #%d' % (name,count))
 
 '''
 Func@getIMG_mt:
@@ -126,17 +128,17 @@ def getIMG_mt(num_t,readDIR,saveDIR):
         t = threading.Thread(target=getIMG,args=(list(fns[cur_idx:cur_idx+avg]),readDIR,saveDIR))
         threads.append(t)
         cur_idx += avg
-    
+
     for i in range(num_t):
         threads[i].start()
-    
+
     for i in range(num_t):
         threads[i].join()
 
 if __name__ == '__main__':
     # example:
-    url_saveDIR = r'G:\myDIR\urls'
-    img_saveDIR = r'G:\myDIR\images'
+    url_saveDIR = 'gic/urls'
+    img_saveDIR = 'gic/images'
     search_items = ['Scarlett Johansson', 'Benedict Cumberbatch']
     getIMGurlsGoogle(search_items = search_items, num = 100,bottom = 10000,saveDIR = url_saveDIR,items_per_round = 10)
     getIMG_mt(num_t = 2,readDIR = url_saveDIR,saveDIR = img_saveDIR)

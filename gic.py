@@ -44,7 +44,7 @@ class MetadataDownloader(ImageDownloader):
       self.keyword = keyword
 
 
-def gic(keyword='sun', thread=4, max_num=10, minsize=(200,200), data_dir='image'):
+def gic(keyword='sun', thread=5, max_num=10, minsize=(200,200), data_dir='image'):
     fileDir = os.path.dirname(os.path.realpath('__file__'))
     meta_filename = 'metadata.txt'
     # new MetadataDownloader
@@ -58,17 +58,36 @@ def gic(keyword='sun', thread=4, max_num=10, minsize=(200,200), data_dir='image'
     fo.write('')
     fo.close()
 
-    google_crawler = GoogleImageCrawler(downloader_cls=_MetadataDownloader,
-                                      parser_threads=thread, downloader_threads=thread,
+    google_crawler = GoogleImageCrawler(downloader_cls=_MetadataDownloader, feeder_threads=1,
+                                      parser_threads=1, downloader_threads=thread*2,
                                       storage={'root_dir': data_dir})
-    google_crawler.crawl(keyword=keyword, max_num=max_num,
+    # usage_rights
+        # f: non-commercial reuse
+        # fm: non-commercial reuse with modification
+        # fc: reuse
+        # fmc: reuse with modification
+    # img_type
+        #photo
+        # face
+        # clipart: clip art
+        # lineart: line drawing
+        # animated
+    # img_color
+        # color: full color
+        # blackandwhite: black and white
+        # transparent: transparent
+        # red, orange, yellow, green, teal, blue, purple, pink, white, gray, black, brown
+    google_crawler.crawl(keyword=keyword, max_num=max_num*10,
                       date_min=None, date_max=None,
-                      min_size=minsize, max_size=None)
+                      min_size=(512,512), max_size=(1920,1920),
+                      usage_rights='fc', img_type=None,
+                      img_color=None)
 
 if __name__ == "__main__":
     '''
     Usage:
 
     '''
-    keyword='sunny'
+    # keyword=['street', 'man', 'woman', 'cat']
+    keyword='street'
     gic(keyword=keyword)

@@ -17,8 +17,6 @@ from icrawler.builtin import GoogleImageCrawler
 from six.moves.urllib.parse import urlparse
 
 
-keyword='sunny'
-
 class MetadataDownloader(ImageDownloader):
     _filename = ''
     meta_filename = 'metadata.txt'
@@ -44,11 +42,21 @@ class MetadataDownloader(ImageDownloader):
     def set_keyword(self, keyword):
       self.keyword = keyword
 
-_MetadataDownloader = MetadataDownloader
-_MetadataDownloader.set_keyword(_MetadataDownloader, keyword)
-google_crawler = GoogleImageCrawler(downloader_cls=_MetadataDownloader,
-                                    parser_threads=4, downloader_threads=4,
-                                    storage={'root_dir': 'image'})
-google_crawler.crawl(keyword=keyword, max_num=10,
+
+def gic(keyword='sun', thread=4, max_num=10, minsize=(200,200), data_dir='image'):
+  _MetadataDownloader = MetadataDownloader
+  _MetadataDownloader.set_keyword(_MetadataDownloader, keyword)
+  google_crawler = GoogleImageCrawler(downloader_cls=_MetadataDownloader,
+                                    parser_threads=thread, downloader_threads=thread,
+                                    storage={'root_dir': data_dir})
+  google_crawler.crawl(keyword=keyword, max_num=max_num,
                      date_min=None, date_max=None,
-                     min_size=(200,200), max_size=None)
+                     min_size=minsize, max_size=None)
+
+if __name__ == "__main__":
+  '''
+  Usage:
+
+  '''
+  keyword='sunny'
+  gic(keyword=keyword)

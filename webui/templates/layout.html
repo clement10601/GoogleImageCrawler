@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="generator" content="Bootstrap Listr">
+  <title>File System</title>
+  <link rel="stylesheet" href="{{url_for('static', filename='css/listr.pack.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='css/jquery.filer.css')}}">
+</head>
+<body dir="ltr">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12">
+        <ol class="breadcrumb" dir="ltr">
+            <li class="breadcrumb-item"><a href="{{url_for('index')}}"><i class="fa fa-fw fa-home fa-lg"></i> </a></li>
+            {% if path %}
+              {% for part in path.strip('/').split('/') %}
+              <li class="breadcrumb-item"><a href="{{url_for('path_view', p='/'+path[:path.find(part)+part|length]+'/')}}"><strong>{{ part }}</strong></a></li>
+              {% endfor %}
+            {% else %}
+              <li class="breadcrumb-item"><a href="{{url_for('path_view')}}"><i class="fa fa-fw fa-file-o"></i></a></li>
+            {% endif %}
+        </ol>
+      </div>
+    </div>
+
+    {% block content %} {% endblock %}
+    
+  </div>
+  <script type="text/javascript" src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
+  <script type="text/javascript" src="{{url_for('static', filename='js/tether.min.js')}}"></script>
+  <script type="text/javascript" src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+  <script type="text/javascript" src="{{url_for('static', filename='js/listr.pack.js')}}"></script>
+  <script type="text/javascript" src="{{url_for('static', filename='js/jquery.filer.min.js')}}"></script>
+  <script type="text/javascript" src="{{url_for('static', filename='js/custom.js')}}"></script>
+</body>
+</html>
+
+

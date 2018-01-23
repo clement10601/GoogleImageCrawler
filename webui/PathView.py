@@ -36,7 +36,7 @@ class PathView(MethodView):
                 info['size'] = sz
                 total['size'] += sz
                 contents.append(info)
-            page = render_template('index.html', path=p, contents=contents, total=total, hide_dotfile=hide_dotfile)
+            page = render_template('file.html', path=p, contents=contents, total=total, hide_dotfile=hide_dotfile)
             res = make_response(page, 200)
             res.set_cookie('hide-dotfile', hide_dotfile, max_age=16070400)
         elif os.path.isfile(path):

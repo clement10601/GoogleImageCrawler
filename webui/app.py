@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 import humanize
 from datetime import datetime
@@ -31,12 +32,6 @@ ignored = ['.bzr', '$RECYCLE.BIN', '.DAV', '.DS_Store', '.git', '.hg', '.htacces
 datatypes = {'audio': 'm4a,mp3,oga,ogg,webma,wav', 'archive': '7z,zip,rar,gz,tar', 'image': 'gif,ico,jpe,jpeg,jpg,png,svg,webp', 'pdf': 'pdf', 'quicktime': '3g2,3gp,3gp2,3gpp,mov,qt', 'source': 'atom,bat,bash,c,cmd,coffee,css,hml,js,json,java,less,markdown,md,php,pl,py,rb,rss,sass,scpt,swift,scss,sh,xml,yml,plist', 'text': 'txt', 'video': 'mp4,m4v,ogv,webm', 'website': 'htm,html,mhtm,mhtml,xhtm,xhtml'}
 icontypes = {'fa-music': 'm4a,mp3,oga,ogg,webma,wav', 'fa-archive': '7z,zip,rar,gz,tar', 'fa-picture-o': 'gif,ico,jpe,jpeg,jpg,png,svg,webp', 'fa-file-text': 'pdf', 'fa-film': '3g2,3gp,3gp2,3gpp,mov,qt', 'fa-code': 'atom,plist,bat,bash,c,cmd,coffee,css,hml,js,json,java,less,markdown,md,php,pl,py,rb,rss,sass,scpt,swift,scss,sh,xml,yml', 'fa-file-text-o': 'txt', 'fa-film': 'mp4,m4v,ogv,webm', 'fa-globe': 'htm,html,mhtm,mhtml,xhtm,xhtml'}
 
-
-path_view = PathView
-path_view.root = root
-path_view.ignored = ignored
-path_view = path_view.as_view('path_view')
-
 @app.template_filter('size_fmt')
 def size_fmt(size):
     return humanize.naturalsize(size)
@@ -68,6 +63,15 @@ def time_humanize(timestamp):
     mdate = datetime.utcfromtimestamp(timestamp)
     return humanize.naturaltime(mdate)
 
+# Route riles
+path_view = PathView
+path_view.root = root
+path_view.ignored = ignored
+path_view = path_view.as_view('path_view')
 
 app.add_url_rule('/file/', view_func=path_view)
 app.add_url_rule('/file/<path:p>', view_func=path_view)
+
+@app.route('/')
+def index():
+    return render_template('index.html', path=0)

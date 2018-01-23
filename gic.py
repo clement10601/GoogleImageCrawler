@@ -79,7 +79,7 @@ def gic(keyword='sun', thread=5, max_num=10, minsize=(200,200), data_dir='image'
         # red, orange, yellow, green, teal, blue, purple, pink, white, gray, black, brown
     google_crawler.crawl(keyword=keyword, max_num=max_num*10,
                       date_min=None, date_max=None,
-                      min_size=(512,512), max_size=(1920,1920),
+                      min_size=(512,512), max_size=(4096,4096),
                       usage_rights='fc', img_type=None,
                       img_color=None)
 

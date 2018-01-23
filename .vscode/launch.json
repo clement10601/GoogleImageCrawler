@@ -8,11 +8,16 @@
       "name": "GIC",
       "type": "python",
       "request": "launch",
-      "stopOnEntry": true,
+      "stopOnEntry": false,
       "pythonPath": "~/.virtualenvs/gic/bin/python",
-      "program": "${file}",
+      "program": "${workspaceFolder}/manager.py",
       "cwd": "${workspaceFolder}",
-      "env": {},
+      "env": {
+        "FLASK_APP": "${workspaceFolder}/manager.py"
+      },
+      "args": [
+        "run",
+      ],
       "envFile": "${workspaceFolder}/.env",
       "debugOptions": [
         "RedirectOutput"
